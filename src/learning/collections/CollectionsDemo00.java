@@ -55,6 +55,10 @@ public class CollectionsDemo00 {
         System.out.println(valueCollection);
 
         map.forEach((key, value) -> System.out.print(key + " : " + value + ", "));              // remove all the elemnts
+
+        Set<Map.Entry<String, String>> entrySet = map.entrySet();
+
+        System.out.println("entry set: " + entrySet);
     }
 
     private void addElements(List<Integer> list) {
