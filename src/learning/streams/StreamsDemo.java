@@ -72,7 +72,7 @@ public class StreamsDemo {
 
     private List<String> getBookTitles() {
         List<String> titles = books.stream()
-                .map(book -> book.getTitle())
+                .map(Book::getTitle)
                 .collect(Collectors.toList());
 
         return titles;
@@ -95,7 +95,7 @@ public class StreamsDemo {
 
     private Set<String> findUniqueGenres() {
         return books.stream()
-                .map(book -> book.getGenre())
+                .map(Book::getGenre)
                 .distinct()
                 .collect(Collectors.toSet());
     }
