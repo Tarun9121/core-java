@@ -1,10 +1,10 @@
-import learning.collections.CollectionsDemo00;
+import learning.streams.StreamsDemo;
 
 // java 17
 public class Main {
     public static void main(String[] args){
-        CollectionsDemo00 test = new CollectionsDemo00();
+        StreamsDemo stream = new StreamsDemo();
 
-        test.hashMap();
+        stream.practiceStreams();
     }
 }
