@@ -1,12 +1,11 @@
 package learning.streams;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.max;
 
 public class StreamsDemo {
     /**
@@ -27,7 +26,7 @@ public class StreamsDemo {
                 .collect(Collectors.toList());
 
         Integer sum = numbers.stream()
-                        .reduce(0, (no1, no2) -> no1 + no2);
+                        .reduce(0, Integer::sum);
 
         System.out.println(squaredEvenNumbers);
 
@@ -35,6 +34,8 @@ public class StreamsDemo {
     }
 
     List<Book> books = Arrays.asList(
+            new Book("The Great Gatsby", "F. Scott Fitzgerald", 10.99, 1925, "Fiction"),
+            new Book("The Great Gatsby", "F. Scott Fitzgerald", 10.99, 1925, "Fiction"),
             new Book("The Great Gatsby", "F. Scott Fitzgerald", 10.99, 1925, "Fiction"),
             new Book("Moby Dick", "Herman Melville", 8.99, 1851, "Fiction"),
             new Book("A Brief History of Time", "Stephen Hawking", 15.99, 1988, "Science"),
@@ -45,7 +46,56 @@ public class StreamsDemo {
     );
 
     public void practiceStreams() {
-        System.out.println(sortBooksByPrice());
+        System.out.println(getThreeExcpensiveBooks());
+    }
+
+    private List<Book> distinctBooks() {
+        return books.stream().distinct().collect(Collectors.toList());
+    }
+
+    private List<Book> getThreeExcpensiveBooks() {
+        return books.stream()
+                .sorted(Comparator.comparingDouble(Book::getPrice).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
+    }
+
+    private List<Book> skipTheFirstTwoBooks() {
+        return books.stream()
+                .skip(2)
+                .collect(Collectors.toList());
+    }
+
+    private Optional<Book> firstBookLessThanTen() {
+        return books.stream()
+                .filter(book -> book.getPrice() < 10)
+                .findFirst();
+    }
+
+    private long countScienceBooks() {
+        return books.stream()
+                .filter(book -> book.getGenre().equalsIgnoreCase("science"))
+                .count();
+    }
+
+    private boolean checkBookIsPublishedBeforeYear(int year) {
+        return books.stream()
+                .anyMatch(book -> book.getYear() <= year);
+    }
+
+    private boolean checkAllBooksAreUnder(int price) {
+        return books.stream()
+                .allMatch(book -> book.getPrice() < price);
+    }
+
+    private Optional<Book> earlestPublicationYear() {
+        return books.stream()
+                .min(Comparator.comparingInt(Book::getYear));
+    }
+
+    private Map<String, List<Book>> groupByGenre() {
+        return books.stream()
+                .collect(Collectors.groupingBy(Book::getGenre));
     }
 
     private List<Book> filterBookByGenre(String genre) {
@@ -53,29 +103,16 @@ public class StreamsDemo {
     }
 
     private Optional<Book> getTheMostExpensiveBook() {
-//        Book mostExpensiveBook = books.stream().reduce(new Book(), (a, b) -> {
-//            if(a.getPrice() > b.getPrice()) {
-//                return a;
-//            }
-//            else {
-//                return b;
-//            }
-//        });
-//
-//        return Optional.of(mostExpensiveBook);
 
-        Optional<Book> expensiveBook = books.stream()
-                .max((book1, book2) -> Double.compare(book1.getPrice(), book2.getPrice()));
-
-        return expensiveBook;
+        return books.stream()
+                .max(Comparator.comparingDouble(Book::getPrice));
     }
 
     private List<String> getBookTitles() {
-        List<String> titles = books.stream()
+
+        return books.stream()
                 .map(Book::getTitle)
                 .collect(Collectors.toList());
-
-        return titles;
     }
 
     private double calculateAvgPrice() {
@@ -93,39 +130,40 @@ public class StreamsDemo {
                 .count();
     }
 
-    private Set<String> findUniqueGenres() {
+    private List<String> findUniqueGenres() {
         return books.stream()
                 .map(Book::getGenre)
                 .distinct()
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
+
+//    private List<Book>
 
     private List<Book> sortBooksByPrice() {
         return books.stream()
                 .sorted((book1, book2) -> (int)(book1.getPrice() - book2.getPrice()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    boolean anyBookUnderTenDollers() {
+    boolean anyBookUnderSpecifiedDollers(double dollers) {
         List<Book> booksUnderTenDollers = books.stream()
-                .filter(book -> book.getPrice() < 10)
-                .collect(Collectors.toList());
+                .filter(book -> book.getPrice() < dollers)
+                .toList();
 
         return !booksUnderTenDollers.isEmpty();
     }
 
     Optional<Book> findFirstBookByAuthor(String author) {
-        Optional<Book> firstBookByAuthor = books.stream()
+
+        return books.stream()
                 .filter(book -> book.getAuthor().equals(author))
                 .findFirst();
-
-        return firstBookByAuthor;
     }
 
     double priceOfAllBooks() {
         return books.stream()
                 .mapToDouble(Book::getPrice)
-                .reduce(0, (price1, price2) -> price1 + price2);
+                .reduce(0, Double::sum);
     }
 
 
